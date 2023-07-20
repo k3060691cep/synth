@@ -1,0 +1,40 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .piano {
+    display: flex;
+    flex-direction: row;
+    gap: 1px;
+  }
+  
+  .key {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    width: 50px;
+    height: 200px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 0 0 8px 8px;
+  }
+  
+  .key.pressed {
+    background-color: #8fb3d9;
+  }
+  
+  .label {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .frequency {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
