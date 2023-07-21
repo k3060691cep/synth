@@ -123,7 +123,7 @@ export const Keyboard = () => {
   const synth = useRef(null);
   const fbD = useRef(null)
   //const feedbackDelay = useRef(null);
-  console.log('test')
+
   const handleOscTypeChange = (event) => {
     const newOscType = event.target.value;
     setOscType(prev => prev = newOscType);
@@ -136,7 +136,7 @@ export const Keyboard = () => {
   useEffect(()=> (
    synth.current = new Tone.PolySynth(Tone.Synth, { oscillator: osc ,envelope: oscEnvelop }),
   fbD.current = new Tone.PingPongDelay(feedbackDelay).toDestination(),
-    console.log()
+    
   )
   
   ,[osc])
