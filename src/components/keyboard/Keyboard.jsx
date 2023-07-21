@@ -123,7 +123,7 @@ export const Keyboard = () => {
   const synth = useRef(null);
   const fbD = useRef(null)
   //const feedbackDelay = useRef(null);
-  
+  console.log('test')
   const handleOscTypeChange = (event) => {
     const newOscType = event.target.value;
     setOscType(prev => prev = newOscType);
