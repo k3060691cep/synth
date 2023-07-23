@@ -97,6 +97,10 @@ const notes = {
  
 
 export const Keyboard = () => { 
+  const createSynth =  (synth, fbD,feedbackDelay, osc, oscEnvelop) =>  (
+    synth.current =  new Tone.PolySynth(Tone.Synth, { oscillator: osc ,envelope: oscEnvelop }),
+  fbD.current =  new Tone.PingPongDelay(feedbackDelay).toDestination())
+
   const [keysPressed, setKeysPressed] = useState(new Set());
   const [activeNotes, setActiveNotes] = useState([]);
   const [oscType, setOscType] = useState("sine");
@@ -133,17 +137,16 @@ export const Keyboard = () => {
   };
  
  
-  useEffect(()=> (
-   synth.current = new Tone.PolySynth(Tone.Synth, { oscillator: osc ,envelope: oscEnvelop }),
-  fbD.current = new Tone.PingPongDelay(feedbackDelay).toDestination(),
-    
-  )
-  
-  ,[osc])
+ 
 
   useEffect(() => {
-    
+    const synthTone =  new Tone.PolySynth(Tone.Synth, { oscillator: osc ,envelope: oscEnvelop })
+    const delay = new Tone.PingPongDelay();
+    synth.current = synthTone
+    fbD.current = delay
+  }, [osc, oscType]);
 
+  useEffect(() => {
     function onKeyDown(event) {
       if (keysPressed.has(event.key)) return;
       setKeysPressed(keysPressed => {
@@ -184,7 +187,7 @@ export const Keyboard = () => {
   }, [activeNotes, synth]);
 
   const playKey = (item) => {
-    synth.triggerAttackRelease(item, "8n");
+   
   };
 
   return (
