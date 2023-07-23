@@ -94,12 +94,7 @@ const notes = {
 };
 
 
- 
-
 export const Keyboard = () => { 
-  const createSynth =  (synth, fbD,feedbackDelay, osc, oscEnvelop) =>  (
-    synth.current =  new Tone.PolySynth(Tone.Synth, { oscillator: osc ,envelope: oscEnvelop }),
-  fbD.current =  new Tone.PingPongDelay(feedbackDelay).toDestination())
 
   const [keysPressed, setKeysPressed] = useState(new Set());
   const [activeNotes, setActiveNotes] = useState([]);
@@ -136,9 +131,6 @@ export const Keyboard = () => {
     type: newOscType}))
   };
  
- 
- 
-
   useEffect(() => {
     const synthTone =  new Tone.PolySynth(Tone.Synth, { oscillator: osc ,envelope: oscEnvelop })
     const delay = new Tone.PingPongDelay();
@@ -163,7 +155,6 @@ export const Keyboard = () => {
     }
 
     function onKeyUp(event) {
-  
       const note = notes[event.key];
       setKeysPressed(keysPressed => {
         const newKeysPressed = new Set(keysPressed);
