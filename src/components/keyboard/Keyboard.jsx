@@ -202,7 +202,8 @@ export const Keyboard = () => {
             className={
               `${activeNotes.includes(item) ? style.active : ''}
               ${white.includes(item) ? style.white : style.black} 
-               ${offsetStyle.includes(item) ? style.offset : ""}             `
+               ${offsetStyle.includes(item) ? style.offset : ""}            
+                `
           }
             key={item}
           ></li>
