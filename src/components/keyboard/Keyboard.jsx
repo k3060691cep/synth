@@ -184,7 +184,6 @@ export const Keyboard = () => {
   return (
     <div>
       <input type="range" id="volume" name="volume" min="0" max="11" />
-
       <div>
         <label htmlFor="osc-type">Oscillator Type:</label>
         <select id="osc-type" value={oscType} onChange={handleOscTypeChange}>
@@ -203,9 +202,7 @@ export const Keyboard = () => {
             className={
               `${activeNotes.includes(item) ? style.active : ''}
               ${white.includes(item) ? style.white : style.black} 
-               ${offsetStyle.includes(item) ? style.offset : ""}
-               
-              `
+               ${offsetStyle.includes(item) ? style.offset : ""}             `
           }
             key={item}
           ></li>
