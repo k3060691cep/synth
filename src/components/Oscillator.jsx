@@ -21,15 +21,10 @@ export const Oscillator = (props) =>{
         if(activeNotes.length > 0){
             osc1.start(activeNotes)
         }
-      
-      
-  
       return () => {
         if(activeNotes.length){
             osc1.stop();
-        }
-        
-        
+        } 
       };
     }, [waveType1, waveType2, keysPressed, activeNotes]);
   
