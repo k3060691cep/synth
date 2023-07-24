@@ -41,7 +41,7 @@ export const Synth = () =>{
     const [activeNotes, setActiveNotes] = useState([]);
     const synth = useRef(null);
 
-    console.log("Synth", keysPressed);
+
     useEffect(() => {
         function onKeyDown(event) {
           if (keysPressed.has(event.key)) return;
