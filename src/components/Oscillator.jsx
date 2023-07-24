@@ -13,7 +13,6 @@ export const Oscillator = (props) =>{
     useEffect(() => {
       const osc1 = new Tone.Oscillator().toDestination();
       const osc2 = new Tone.Oscillator().toDestination();
-        console.log('osc1', osc1)
       osc1.type = waveType1;
       osc2.type = waveType2;
         console.log("keysPressed:", keysPressed);
