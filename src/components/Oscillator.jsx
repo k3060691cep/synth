@@ -96,11 +96,8 @@ export const Oscillator = () =>{
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
       };
-   
-      
-    
+
     }, [waveType, activeNotes, attack, decay, sustain, release]);
-  
     const handleWaveTypeChange = (event) => {
       const newWaveType = event.target.value;
       setWaveType(newWaveType);     
