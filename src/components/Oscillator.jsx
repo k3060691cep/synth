@@ -4,48 +4,121 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import * as Tone from "tone";
 
 
-export const Oscillator = (props) =>{
-    const { keysPressed, activeNotes} = props
+export const Oscillator = () =>{
+    const [waveType, setWaveType] = useState('sine');
+    const [activeNotes, setActiveNotes] = useState({});
+    const [attack, setAttack] = useState(0.1);
+    const [decay, setDecay] = useState(0.2);
+    const [sustain, setSustain] = useState(0.5);
+    const [release, setRelease] = useState(1);
 
-    const [waveType1, setWaveType1] = useState('sine');
-    const [waveType2, setWaveType2] = useState('sawtooth');
-  
     useEffect(() => {
-      const osc1 = new Tone.Oscillator().toDestination();
-      const osc2 = new Tone.Oscillator().toDestination();
-      osc1.type = waveType1;
-      osc2.type = waveType2;
-        console.log("keysPressed:", keysPressed);
-        console.log("activeNotes:", activeNotes);
-        if(activeNotes.length > 0){
-            osc1.start(activeNotes)
-        }
-      return () => {
-        if(activeNotes.length){
-            osc1.stop();
-        } 
-      };
-    }, [waveType1, waveType2, keysPressed, activeNotes]);
-  
-    const handleWaveTypeChange = (oscillatorNum, event) => {
-      const newWaveType = event.target.value;
-      if (oscillatorNum === 1) {
-        setWaveType1(newWaveType);
-      } else if (oscillatorNum === 2) {
-        setWaveType2(newWaveType);
+     // Инициализируем Tone.js
+     //Tone.start();
+   
+     // Функция для обработки нажатия клавиш
+     const handleKeyDown = (e) => {
+       const note = getNoteFromKey(e.key);
+       if (note && !activeNotes[note]) {
+         // Создаем новый осциллятор и добавляем его в список активных нот
+         const oscillator = new Tone.Oscillator(note, waveType).toDestination();
+         const envelope = new Tone.Envelope({
+          attack,
+          decay,
+          sustain,
+          release,
+        }).connect(oscillator.volume);
+         console.log(note);
+         envelope.triggerAttack();
+         oscillator.start();
+         setActiveNotes((prevActiveNotes) => ({ ...prevActiveNotes, [note]: oscillator }));
+       }
+     };
+     const handleKeyUp = (e) => {
+      const note = getNoteFromKey(e.key);
+      if (note && activeNotes[note]) {
+        // Отключаем и удаляем осциллятор из списка активных нот
+        activeNotes[note].envelope.triggerRelease();
+        activeNotes[note].oscillator.stop();
+    
+        activeNotes[note].oscillator.dispose();
+        setActiveNotes((prevActiveNotes) => {
+          const updatedActiveNotes = { ...prevActiveNotes };
+          delete updatedActiveNotes[note];
+          return updatedActiveNotes;
+        });
       }
+    };
+  
+      // Функция для обработки отпускания клавиш
+      
+  
+      // Получаем ноту из нажатой клавиши
+      const getNoteFromKey = (key) => {
+        const notes = {
+          z: "C4",
+          s: "Db4",
+          x: "D4",
+          d: "Eb4",
+          c: "E4",
+          v: "F4",
+          g: "Gb4",
+          b: "G4",
+          h: "Ab4",
+          n: "A4",
+          j: "Bb4",
+          m: "B4",
+          q: "C5",
+          2: "Db5",
+          w: "D5",
+          3: "Eb5",
+          e: "E5",
+          r: "F5",
+          5: "Gb5",
+          t: "G5",
+          6: "Ab5",
+          y: "A5",
+          7: "Bb5",
+          u: "B5",
+          i: "C6",
+          9: "Db6",
+          o: "D6",
+          0: "Eb6",
+          p: "E6",
+        
+        };
+        return notes[key.toLowerCase()];
+      };
+  
+      // Добавляем слушатели событий для обработки нажатия/отпускания клавиш
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('keyup', handleKeyUp);
+  
+      // Очистка слушателей при размонтировании компонента
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('keyup', handleKeyUp);
+      };
+   
+      
+    
+    }, [waveType, activeNotes, attack, decay, sustain, release]);
+  
+    const handleWaveTypeChange = (event) => {
+      const newWaveType = event.target.value;
+      setWaveType(newWaveType);     
     };
   
     return (
       <div>
         <div>
-          <h3>Oscillator 1 Wave Type: {waveType1}</h3>
+          <h3>Oscillator 1 Wave Type: {waveType}</h3>
           <label>
             <input
               type="radio"
               value="sine"
-              checked={waveType1 === 'sine'}
-              onChange={(e) => handleWaveTypeChange(1, e)}
+              checked={waveType === 'sine'}
+              onChange={(e) => handleWaveTypeChange(e)}
             />
             Sine
           </label>
@@ -53,8 +126,8 @@ export const Oscillator = (props) =>{
             <input
               type="radio"
               value="triangle"
-              checked={waveType1 === 'triangle'}
-              onChange={(e) => handleWaveTypeChange(1, e)}
+              checked={waveType === 'triangle'}
+              onChange={(e) => handleWaveTypeChange(e)}
             />
             Triangle
           </label>
@@ -62,8 +135,8 @@ export const Oscillator = (props) =>{
             <input
               type="radio"
               value="square"
-              checked={waveType1 === 'square'}
-              onChange={(e) => handleWaveTypeChange(1, e)}
+              checked={waveType === 'square'}
+              onChange={(e) => handleWaveTypeChange(e)}
             />
             Square
           </label>
@@ -71,51 +144,28 @@ export const Oscillator = (props) =>{
             <input
               type="radio"
               value="sawtooth"
-              checked={waveType1 === 'sawtooth'}
-              onChange={(e) => handleWaveTypeChange(1, e)}
+              checked={waveType === 'sawtooth'}
+              onChange={(e) => handleWaveTypeChange(e)}
             />
             Sawtooth
           </label>
         </div>
         <div>
-          <h3>Oscillator 2 Wave Type: {waveType2}</h3>
-          <label>
-            <input
-              type="radio"
-              value="sine"
-              checked={waveType2 === 'sine'}
-              onChange={(e) => handleWaveTypeChange(2, e)}
-            />
-            Sine
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="triangle"
-              checked={waveType2 === 'triangle'}
-              onChange={(e) => handleWaveTypeChange(2, e)}
-            />
-            Triangle
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="square"
-              checked={waveType2 === 'square'}
-              onChange={(e) => handleWaveTypeChange(2, e)}
-            />
-            Square
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="sawtooth"
-              checked={waveType2 === 'sawtooth'}
-              onChange={(e) => handleWaveTypeChange(2, e)}
-            />
-            Sawtooth
-          </label>
-        </div>
+        <label>Attack:</label>
+        <input type="range" min="0" max="1" step="0.01" value={attack} onChange={(e) => setAttack(parseFloat(e.target.value))} />
       </div>
+      <div>
+        <label>Decay:</label>
+        <input type="range" min="0" max="1" step="0.01" value={decay} onChange={(e) => setDecay(parseFloat(e.target.value))} />
+      </div>
+      <div>
+        <label>Sustain:</label>
+        <input type="range" min="0" max="1" step="0.01" value={sustain} onChange={(e) => setSustain(parseFloat(e.target.value))} />
+      </div>
+      <div>
+        <label>Release:</label>
+        <input type="range" min="0" max="1" step="0.01" value={release} onChange={(e) => setRelease(parseFloat(e.target.value))} />
+      </div>
+       </div>
     );
   }
