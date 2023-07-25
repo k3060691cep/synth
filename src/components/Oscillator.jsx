@@ -28,7 +28,7 @@ export const Oscillator = () =>{
           sustain,
           release,
         }).connect(oscillator.volume);
-         console.log(note);
+         
          envelope.triggerAttack();
          oscillator.start();
          setActiveNotes((prevActiveNotes) => ({ ...prevActiveNotes, [note]: oscillator }));
