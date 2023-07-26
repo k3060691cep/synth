@@ -53,9 +53,7 @@ const white = [
   "B5",
   "C6",
   "D6",
-  "E6",
-  
-  
+  "E6", 
 ];
 const offsetStyle = ["D4", "E4", "G4", "A4", "B4", "D5", "E5", "G5", "A5", "B5", "D6", "E6"];
 
@@ -195,7 +193,7 @@ export const Keyboard = () => {
           <option value="sine">Sine</option>
         </select>
       </div>
-      <div className="synth">
+     
       <ul>
         {notesArr.map((item) => (
         
@@ -211,7 +209,7 @@ export const Keyboard = () => {
           ></li>
         ))}
       </ul>
-      </div>
+     
     </div>
   );
 };
