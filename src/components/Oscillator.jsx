@@ -6,11 +6,8 @@ import * as Tone from "tone";
 
 export const Oscillator = () =>{
     const [waveType, setWaveType] = useState('sine');
+
     const [activeNotes, setActiveNotes] = useState({});
-    const [attack, setAttack] = useState(0.1);
-    const [decay, setDecay] = useState(0.2);
-    const [sustain, setSustain] = useState(0.5);
-    const [release, setRelease] = useState(1);
 
     useEffect(() => {
      // Инициализируем Tone.js
@@ -22,14 +19,8 @@ export const Oscillator = () =>{
        if (note && !activeNotes[note]) {
          // Создаем новый осциллятор и добавляем его в список активных нот
          const oscillator = new Tone.Oscillator(note, waveType).toDestination();
-         const envelope = new Tone.Envelope({
-          attack,
-          decay,
-          sustain,
-          release,
-        }).connect(oscillator.volume);
+         console.log(note);
          
-         envelope.triggerAttack();
          oscillator.start();
          setActiveNotes((prevActiveNotes) => ({ ...prevActiveNotes, [note]: oscillator }));
        }
@@ -38,10 +29,8 @@ export const Oscillator = () =>{
       const note = getNoteFromKey(e.key);
       if (note && activeNotes[note]) {
         // Отключаем и удаляем осциллятор из списка активных нот
-        activeNotes[note].envelope.triggerRelease();
-        activeNotes[note].oscillator.stop();
-    
-        activeNotes[note].oscillator.dispose();
+        activeNotes[note].stop();
+        activeNotes[note].dispose();
         setActiveNotes((prevActiveNotes) => {
           const updatedActiveNotes = { ...prevActiveNotes };
           delete updatedActiveNotes[note];
@@ -49,7 +38,10 @@ export const Oscillator = () =>{
         });
       }
     };
-      // Функция для обработки отпускания клави
+  
+      // Функция для обработки отпускания клавиш
+      
+  
       // Получаем ноту из нажатой клавиши
       const getNoteFromKey = (key) => {
         const notes = {
@@ -96,11 +88,21 @@ export const Oscillator = () =>{
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
       };
-
-    }, [waveType, activeNotes, attack, decay, sustain, release]);
+   
+      
+    
+    }, [waveType, activeNotes]);
+  
     const handleWaveTypeChange = (event) => {
       const newWaveType = event.target.value;
-      setWaveType(newWaveType);     
+
+      console.log(event);
+     
+      
+      setWaveType(newWaveType);
+     
+        
+      
     };
   
     return (
@@ -144,22 +146,6 @@ export const Oscillator = () =>{
             Sawtooth
           </label>
         </div>
-        <div>
-        <label>Attack:</label>
-        <input type="range" min="0" max="1" step="0.01" value={attack} onChange={(e) => setAttack(parseFloat(e.target.value))} />
-      </div>
-      <div>
-        <label>Decay:</label>
-        <input type="range" min="0" max="1" step="0.01" value={decay} onChange={(e) => setDecay(parseFloat(e.target.value))} />
-      </div>
-      <div>
-        <label>Sustain:</label>
-        <input type="range" min="0" max="1" step="0.01" value={sustain} onChange={(e) => setSustain(parseFloat(e.target.value))} />
-      </div>
-      <div>
-        <label>Release:</label>
-        <input type="range" min="0" max="1" step="0.01" value={release} onChange={(e) => setRelease(parseFloat(e.target.value))} />
-      </div>
        </div>
     );
   }

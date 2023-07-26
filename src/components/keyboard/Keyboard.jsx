@@ -110,12 +110,12 @@ export const Keyboard = () => {
     attack: 0.1,
     decay: 0.5,
     sustain: 0.0,
-    release: 0.1,
+    release: 0.9,
   });
   const [feedbackDelay, setFeedbackDelay] = useState({
     delayTime: "8n",
-    feedback: 0.1,
-    wet: 0.1,
+    feedback: 0.2,
+    wet: 0.8,
   });
  
   console.log(oscType)
@@ -132,8 +132,9 @@ export const Keyboard = () => {
   };
  
   useEffect(() => {
-    const synthTone =  new Tone.PolySynth(Tone.Synth, { oscillator: osc ,envelope: oscEnvelop })
-    const delay = new Tone.PingPongDelay();
+    const synthTone =  new Tone.PolySynth(Tone.Synth, { oscillator: osc , envelope: oscEnvelop }).toDestination()
+    const delay = new Tone.FeedbackDelay(feedbackDelay).toDestination();
+    //synthTone.connect(delay)
     synth.current = synthTone
     fbD.current = delay
   }, [osc, oscType]);
@@ -150,7 +151,8 @@ export const Keyboard = () => {
       
       if (note && !activeNotes.includes(note)) {
         setActiveNotes([...activeNotes, note]);
-        synth.current.triggerAttack(note).connect(fbD.current).toDestination();
+        synth.current.triggerAttackRelease(note).connect(fbD.current);
+        //synth.current.triggerAttackRelease(note).toMaster()
       }
     }
 
