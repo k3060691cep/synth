@@ -96,19 +96,42 @@ export const Keyboard = () => {
 
   const [keysPressed, setKeysPressed] = useState(new Set());
   const [activeNotes, setActiveNotes] = useState([]);
-  const [oscType, setOscType] = useState("sine");
+  const [oscType, setOscType] = useState("sawtooth");
+  const [polySynth , setPolySynth] = useState({
+    "volume": 0,
+    "detune": 0,
+    "portamento": 0,
+    "envelope": {
+      "attack": 1,
+      "attackCurve": "linear",
+      "decay": 0.1,
+      "decayCurve": "exponential",
+      "release": 1,
+      "releaseCurve": "exponential",
+      "sustain": 0.6
+    },
+    "oscillator": {
+      "partialCount": 0,
+      "partials": [],
+      "phase": 0,
+      "type": oscType 
+    }
+  });
   const [osc, setOsc] = useState({  
     count: 1,
     spread: 1,
     partialCount: 3,
     type: oscType
   });
-  console.log(osc)
+  
   const [oscEnvelop, setOscEnvelop] = useState({
-    attack: 0.1,
-    decay: 0.5,
-    sustain: 0.0,
-    release: 0.9,
+    attack : 0.005,
+    attackCurve : "linear",
+    decay : 0.1,
+    decayCurve: "exponential",
+    release: 1,
+    releaseCurve: "exponential",
+    sustain: 0.0  
   });
   const [feedbackDelay, setFeedbackDelay] = useState({
     delayTime: "8n",
@@ -116,7 +139,7 @@ export const Keyboard = () => {
     wet: 0.8,
   });
  
-  console.log(oscType)
+
   const synth = useRef(null);
   const fbD = useRef(null)
   //const feedbackDelay = useRef(null);
@@ -127,15 +150,27 @@ export const Keyboard = () => {
     setOsc((prev) =>  ({count: 1,
     spread: 1,
     type: newOscType}))
+    setPolySynth(prevState => ({
+      ...prevState,
+      oscillator: {
+        ...prevState.oscillator,
+        type: newOscType
+      }
+    }));
+    
   };
  
   useEffect(() => {
-    const synthTone =  new Tone.PolySynth(Tone.Synth, { oscillator: osc , envelope: oscEnvelop }).toDestination()
+    //Tone.Synth, { oscillator: osc , envelope: oscEnvelop }
+    let newOBJ = JSON.parse(JSON.stringify(polySynth)) 
+    const synthTone =  new Tone.PolySynth(Tone.Synth, {...polySynth}).toDestination()
     const delay = new Tone.FeedbackDelay(feedbackDelay).toDestination();
     //synthTone.connect(delay)
+    //synthTone.set(polySynth)
     synth.current = synthTone
     fbD.current = delay
-  }, [osc, oscType]);
+    console.log(polySynth);
+  }, [osc, oscType,]);
 
   useEffect(() => {
     function onKeyDown(event) {
@@ -149,7 +184,7 @@ export const Keyboard = () => {
       
       if (note && !activeNotes.includes(note)) {
         setActiveNotes([...activeNotes, note]);
-        synth.current.triggerAttackRelease(note).connect(fbD.current);
+        synth.current.triggerAttack([note]).connect(fbD.current);
         //synth.current.triggerAttackRelease(note).toMaster()
       }
     }
@@ -163,7 +198,7 @@ export const Keyboard = () => {
       });
       if (note) {
         setActiveNotes(activeNotes.filter((n) => n !== note));
-        
+        synth.current.triggerRelease([note]).connect(fbD.current);
       }
     }
 

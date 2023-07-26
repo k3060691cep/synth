@@ -12,6 +12,7 @@ export const Synth = () =>{
     return (
       <div>
         <div className="synth">
+          
          <Keyboard/> 
         </div>
       </div>
