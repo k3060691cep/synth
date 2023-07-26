@@ -102,13 +102,13 @@ export const Keyboard = () => {
     "detune": 0,
     "portamento": 0,
     "envelope": {
-      "attack": 1,
+      "attack": 0.1,
       "attackCurve": "linear",
-      "decay": 0.1,
+      "decay": 0.6,
       "decayCurve": "exponential",
-      "release": 1,
+      "release": 0.2,
       "releaseCurve": "exponential",
-      "sustain": 0.6
+      "sustain": 0.1
     },
     "oscillator": {
       "partialCount": 0,
@@ -198,7 +198,7 @@ export const Keyboard = () => {
       });
       if (note) {
         setActiveNotes(activeNotes.filter((n) => n !== note));
-        synth.current.triggerRelease([note]).connect(fbD.current);
+        synth.current.triggerRelease([note]);
       }
     }
 
