@@ -165,8 +165,7 @@ export const Keyboard = () => {
     let newOBJ = JSON.parse(JSON.stringify(polySynth)) 
     const synthTone =  new Tone.PolySynth(Tone.Synth, {...polySynth}).toDestination()
     const delay = new Tone.FeedbackDelay(feedbackDelay).toDestination();
-    //synthTone.connect(delay)
-    //synthTone.set(polySynth)
+
     synth.current = synthTone
     fbD.current = delay
     console.log(polySynth);
