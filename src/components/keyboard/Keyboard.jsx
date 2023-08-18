@@ -91,7 +91,6 @@ const notes = {
 
 };
 
-
 export const Keyboard = () => { 
 
   const [keysPressed, setKeysPressed] = useState(new Set());
